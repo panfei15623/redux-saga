@@ -16,7 +16,7 @@ export default function newTask(env, mainTask, parentContext, parentEffectId, me
 
   const context = Object.create(parentContext)
   const queue = forkQueue(
-    mainTask,
+    mainTask, // { meta, cancel: cancelMain, status: RUNNING }
     function onAbort() {
       cancelledDueToErrorTasks.push(...queue.getTasks().map(t => t.meta.name))
     },

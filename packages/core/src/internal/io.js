@@ -33,6 +33,12 @@ export function take(patternOrChannel = '*', multicastPattern) {
     if (is.notUndef(multicastPattern)) {
       console.warn(`take(pattern) takes one argument but two were provided. Consider passing an array for listening to several action types`)
     }
+    // return {
+    //   [IO]: true,
+    //   combinator: false,
+    //   type: effectTypes.TAKE,
+    //   payload: { pattern: 'INCREMENT_ASYNC' },
+    // }
     return makeEffect(effectTypes.TAKE, { pattern: patternOrChannel })
   }
   if (is.multicast(patternOrChannel) && is.notUndef(multicastPattern) && is.pattern(multicastPattern)) {

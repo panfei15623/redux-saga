@@ -12,15 +12,15 @@ export default function proc(env, iterator, parentContext, parentEffectId, meta,
   if (process.env.NODE_ENV !== 'production' && iterator[asyncIteratorSymbol]) {
     throw new Error("redux-saga doesn't support async generators, please use only regular ones")
   }
-
-  const finalRunEffect = env.finalizeRunEffect(runEffect)
+ 
+  const finalRunEffect = env.finalizeRunEffect(runEffect) // runEffect
 
   /**
     Tracks the current effect cancellation
     Each time the generator progresses. calling runEffect will set a new value
     on it. It allows propagating cancellation to child effects
   **/
-  next.cancel = noop
+  next.cancel = noop // () => {}
 
   /** Creates a main task to track the main flow */
   const mainTask = { meta, cancel: cancelMain, status: RUNNING }
@@ -29,6 +29,32 @@ export default function proc(env, iterator, parentContext, parentEffectId, meta,
    Creates a new task descriptor for this generator.
    A task is the aggregation of it's mainTask and all it's forked tasks.
    **/
+  //  task = {
+  //   // fields
+  //   [TASK]: true,
+  //   id: parentEffectId,
+  //   meta,
+  //   isRoot,
+  //   context,
+  //   joiners: [],
+  //   queue: {
+  //     addTask,
+  //     cancelAll,
+  //     abort,
+  //     getTasks,
+  //   },
+  //   // methods
+  //   cancel,
+  //   cont,
+  //   end,
+  //   setContext,
+  //   toPromise,
+  //   isRunning: () => status === RUNNING,
+  //   isCancelled: () => status === CANCELLED || (status === RUNNING && mainTask.status === CANCELLED),
+  //   isAborted: () => status === ABORTED,
+  //   result: () => taskResult,
+  //   error: () => taskError,
+  //  }
   const task = newTask(env, mainTask, parentContext, parentEffectId, meta, isRoot, cont)
 
   const executingContext = {
@@ -76,7 +102,7 @@ export default function proc(env, iterator, parentContext, parentEffectId, meta,
         result = iterator.throw(arg)
         // user handled the error, we can clear bookkept values
         sagaError.clear()
-      } else if (shouldCancel(arg)) {
+      } else if (shouldCancel(arg)) { // shouldCancel = res => res === TASK_CANCEL
         /**
           getting TASK_CANCEL automatically cancels the main task
           We can get this value here

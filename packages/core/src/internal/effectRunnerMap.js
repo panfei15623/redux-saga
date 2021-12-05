@@ -84,6 +84,7 @@ function runPutEffect(env, { channel, action, resolve }, cb) {
 }
 
 function runTakeEffect(env, { channel = env.channel, pattern, maybe }, cb) {
+  // 这里的input就是action
   const takeCb = input => {
     if (input instanceof Error) {
       cb(input, true)
@@ -96,6 +97,7 @@ function runTakeEffect(env, { channel = env.channel, pattern, maybe }, cb) {
     cb(input)
   }
   try {
+    // 主要功能就是调用channel的take方法
     channel.take(takeCb, is.notUndef(pattern) ? matcher(pattern) : null)
   } catch (err) {
     cb(err, true)

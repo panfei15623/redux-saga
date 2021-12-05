@@ -3,6 +3,7 @@ import { check, assignWithSymbols, createSetContextWarning } from './utils'
 import { stdChannel } from './channel'
 import { runSaga } from './runSaga'
 
+// createSagaMiddleware 定义
 export default function sagaMiddlewareFactory({ context = {}, channel = stdChannel(), sagaMonitor, ...options } = {}) {
   let boundRunSaga
 
@@ -10,6 +11,7 @@ export default function sagaMiddlewareFactory({ context = {}, channel = stdChann
     check(channel, is.channel, 'options.channel passed to the Saga middleware is not a channel')
   }
 
+  // 符合中间件格式
   function sagaMiddleware({ getState, dispatch }) {
     boundRunSaga = runSaga.bind(null, {
       ...options,
@@ -24,7 +26,12 @@ export default function sagaMiddlewareFactory({ context = {}, channel = stdChann
       if (sagaMonitor && sagaMonitor.actionDispatched) {
         sagaMonitor.actionDispatched(action)
       }
+
+      // 从这里就可以看出来，先触发reducer，然后才再处理action，所以side effect慢于reducer
+      // 也就是一个action发出，先触发reducer，然后才触发saga监听
       const result = next(action) // hit reducers
+
+      // saga 监听 action 的起点
       channel.put(action)
       return result
     }
