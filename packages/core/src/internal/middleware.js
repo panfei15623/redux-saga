@@ -22,6 +22,7 @@ export default function sagaMiddlewareFactory({ context = {}, channel = stdChann
       sagaMonitor,
     })
 
+    // next 表示上一个中间件产生的 dispatch
     return next => action => {
       if (sagaMonitor && sagaMonitor.actionDispatched) {
         sagaMonitor.actionDispatched(action)
@@ -29,7 +30,7 @@ export default function sagaMiddlewareFactory({ context = {}, channel = stdChann
 
       // 从这里就可以看出来，先触发reducer，然后才再处理action，所以side effect慢于reducer
       // 也就是一个action发出，先触发reducer，然后才触发saga监听
-      const result = next(action) // hit reducers
+      const result = next(action) // 执行上一个中间件的 dispatch，hit reducers
 
       // saga 监听 action 的起点
       channel.put(action)

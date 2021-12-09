@@ -31,7 +31,10 @@ export function take(patternOrChannel = '*', multicastPattern) {
   }
   if (is.pattern(patternOrChannel)) {
     if (is.notUndef(multicastPattern)) {
-      console.warn(`take(pattern) takes one argument but two were provided. Consider passing an array for listening to several action types`)
+      // eslint-disable-next-line no-console
+      console.warn(
+        `take(pattern) takes one argument but two were provided. Consider passing an array for listening to several action types`,
+      )
     }
     // return {
     //   [IO]: true,
@@ -46,6 +49,7 @@ export function take(patternOrChannel = '*', multicastPattern) {
   }
   if (is.channel(patternOrChannel)) {
     if (is.notUndef(multicastPattern)) {
+      // eslint-disable-next-line no-console
       console.warn(`take(channel) takes one argument but two were provided. Second argument is ignored.`)
     }
     return makeEffect(effectTypes.TAKE, { channel: patternOrChannel })
@@ -186,7 +190,14 @@ export function fork(fnDescriptor, ...args) {
 
     check(fnDescriptor, arg => !is.effect(arg), 'fork: argument must not be an effect')
   }
+  // getFnCallDescriptor(fnDescriptor, args) = { context, fn: fnDescriptor, args }
   return makeEffect(effectTypes.FORK, getFnCallDescriptor(fnDescriptor, args))
+  // return {
+  //   [IO]: true,
+  //   combinator: false,
+  //   type: effectTypes.FORK,
+  //   payload: { context, fn: fnDescriptor, args },
+  // }
 }
 
 export function spawn(fnDescriptor, ...args) {

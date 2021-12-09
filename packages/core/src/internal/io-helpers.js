@@ -21,6 +21,12 @@ export function takeEvery(patternOrChannel, worker, ...args) {
   }
 
   return fork(takeEveryHelper, patternOrChannel, worker, ...args)
+  // return {
+  //   [IO]: true,
+  //   combinator: false,
+  //   type: effectTypes.FORK,
+  //   payload: { context, fn: takeEveryHelper, args },
+  // }
 }
 
 export function takeLatest(patternOrChannel, worker, ...args) {

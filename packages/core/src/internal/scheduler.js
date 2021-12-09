@@ -29,7 +29,7 @@ export function asap(task) {
   queue.push(task)
 
   if (!semaphore) {
-    suspend()
+    suspend() // semaphore++
     flush()
   }
 }
